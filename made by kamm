@@ -1,0 +1,82 @@
+-- Get all the players in the game.
+local players = game.Players:GetPlayers()
+
+-- Iterate through all the players and highlight them.
+for _, player in ipairs(players) do
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = player.Character.HumanoidRootPart
+
+    -- Set the highlight color to red.
+    highlight.OutlineColor = Color3.new(1, 0, 0)
+
+    -- Set the highlight transparency to 0.5.
+    highlight.OutlineTransparency = 0.5
+end
+-- Get the camera.
+local camera = game.Players.LocalPlayer.Character.Camera
+
+-- Get the mouse.
+local mouse = game.Players.LocalPlayer:GetMouse()
+
+-- Create a variable to store the locked-on target.
+local lockedOnTarget = nil
+
+-- Create a function to lock on to a target.
+local function lockOn(target)
+    lockedOnTarget = target
+end
+
+-- Create a function to unlock from a target.
+local function unlock()
+    lockedOnTarget = nil
+end
+
+-- Bind the lock-on function to the right mouse button.
+mouse.Button2Down:Connect(lockOn)
+
+-- Bind the unlock function to the left mouse button.
+mouse.Button1Down:Connect(unlock)
+
+-- Create a function to update the camera to look at the locked-on target.
+local function updateCamera()
+    if lockedOnTarget then
+        camera.CFrame = CFrame.lookAt(camera.CFrame.Position, lockedOnTarget.Character.HumanoidRootPart.Position)
+    end
+end
+
+-- Schedule the updateCamera function to be called every frame.
+game.RunService.RenderStepped:Connect(updateCamera)
+-- Get the camera.
+local camera = game.Players.LocalPlayer.Character.Camera
+
+-- Get all the players in the game.
+local players = game.Players:GetPlayers()
+
+-- Create a dictionary to store the name labels for each player.
+local nameLabels = {}
+
+-- Iterate through all the players and create a name label for each one.
+for _, player in ipairs(players) do
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Parent = game.Workspace
+    nameLabel.Text = player.Name
+    nameLabel.Size = Vector2.new(100, 20)
+    nameLabel.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 0)
+    nameLabel.ZIndex = 10
+
+    -- Store the name label in the dictionary.
+    nameLabels[player] = nameLabel
+end
+
+-- Create a function to update the position of the name labels.
+local function updateNameLabels()
+    for _, player in ipairs(players) do
+        local nameLabel = nameLabels[player]
+        if nameLabel then
+            nameLabel.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 0)
+        end
+    end
+end
+
+-- Schedule the updateNameLabels function to be called every frame.
+game.RunService.RenderStepped:Connect(updateNameLabels)
